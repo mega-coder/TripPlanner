@@ -51,10 +51,6 @@ Socket.on("preview1",function (data) {
         $(".words").remove();
     }
 
-
-
-
-
 });
 
 

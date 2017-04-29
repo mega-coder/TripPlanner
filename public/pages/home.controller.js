@@ -1,42 +1,74 @@
 function HomeControllerFN($scope,$http){
 
     /*    ************************************** google api ************************************************************ */
+
     $scope.propositions=[];
     $scope.combinations=[];
+    $scope.data = [];
     $scope.display = false;
+    $scope.display2 = false;
+    var mean = true;
     var map;
     var initialize;
     var lt;
     var lg;
 
+    /////////////////////////////  place auto complete ///////////////////////////////////////////////////////
+    $scope.lat_destination = undefined;
+    $scope.lng_destination = undefined;
+
+    var departs = [];
+    var arrivees =[];
+    $scope.$on('gmPlacesAutocomplete::placeChanged', function() {
+        var location = $scope.autocomplete_destination.getPlace().geometry.location;
+        $scope.lat_destination = location.lat();
+        $scope.lng_destination = location.lng();
+        $scope.$apply();
+
+    });
+
+    $scope.lat_depart = undefined;
+    $scope.lng_depart = undefined;
+
+    $scope.$on('gmPlacesAutocomplete::placeChanged', function() {
+        var location = $scope.autocomplete_depart.getPlace().geometry.location;
+        $scope.lat_depart = location.lat();
+        $scope.lng_depart = location.lng();
+        $scope.$apply();
+
+        initialize(data_max);
+    });
+
+
+    ///////////////////////////// markage rayon ///////////////////////////////////////////////////////
+
     function  Markage(lt1,lg1,dist) {
 
         $http.get("http://localhost:3000/stations/near/"+lt1+"/"+lg1+"/"+dist)
             .then(function(response) {
-                console.log(response.data);
                 for (i=0;i<response.data.length;i++) {
                     var xxx = new google.maps.LatLng(response.data[i].loc[0], response.data[i].loc[1]);
                     var marker = new google.maps.Marker({
                         position: xxx,
                         icon: "../assets/img/marker.png",
-                        map: map
-                    });
+                        map: map  }
+                    );
                 }
             });
     }
 
+    //////////////////// tous les propositions /////////////////////////////////////
+
+
     $scope.getPropositions = function() {
-        $http.get("http://localhost:3000/stations/near/"+lt+"/"+lg+"/"+1000)
+        $scope.propositions = [];
+        $http.get("http://localhost:3000/stations/near/"+lt+"/"+lg+"/"+$scope.rad)
             .then(function (response) {
                 departs=response.data;
             }).finally(function () {
 
-
-            $http.get("http://localhost:3000/stations/near/"+$scope.lat_destination+"/"+$scope.lng_destination+"/"+1000)
+            $http.get("http://localhost:3000/stations/near/"+$scope.lat_destination+"/"+$scope.lng_destination+"/"+$scope.rad)
                 .then(function (response) {
-
-                    // console.log($scope.lat_destination);
-                    // console.log($scope.lat_destination);
 
                     arrivees=response.data;
                 }).finally(function(){
@@ -45,8 +77,10 @@ function HomeControllerFN($scope,$http){
                 {
                     for(j=0;j<arrivees.length;j++)
                     {
+
                         $http.get("http://localhost:3000/stations/combinaison/"+departs[i].id+"/"+arrivees[j].id)
                             .then(function (response) {
+                                $scope.data.push(response.data);
                                 $scope.propositions.push(response.data);
                                 $scope.display = true;
                                 console.log(response.data);
@@ -54,53 +88,49 @@ function HomeControllerFN($scope,$http){
                     }
                 }
 
-
             });
-
-
         });
-
-
     }
 
-$scope.findPath = function (prop) {
+    //////////////////////////////////////// tracage d'itineraire //////////////////////////////////////////////
 
-var ad;
-var aa;
-var at;
-console.log(prop);
-    $http.get("http://localhost:3000/stations/"+prop.arret_depart)
-        .then(function (response) {
-           ad =response.data
-        }).finally(function () {
+    $scope.findPath = function (prop) {
 
-        $http.get("http://localhost:3000/stations/"+prop.arret_transit)
+        var ad;
+        var aa;
+        var at;
+
+        $http.get("http://localhost:3000/stations/"+prop.arret_depart)
             .then(function (response) {
-                at =response.data;
-
+                ad =response.data
             }).finally(function () {
 
-           $http.get("http://localhost:3000/stations/"+prop.arret_arrivee)
+            $http.get("http://localhost:3000/stations/"+prop.arret_transit)
                 .then(function (response) {
-                    aa =response.data;
+                    at =response.data;
 
                 }).finally(function () {
-                trace(ad[0].loc,at[0].loc,aa[0].loc);
 
+                $http.get("http://localhost:3000/stations/"+prop.arret_arrivee)
+                    .then(function (response) {
+                        aa =response.data;
+
+                    }).finally(function () {
+                    trace(ad[0].loc,at[0].loc,aa[0].loc);
+                });
             });
         });
-
-    });
-
-}
+    }
 
     function  trace( v1,v2,v3) {
+
         var var1 = new google.maps.LatLng(v1[0], v1[1]);
         var var2 = new google.maps.LatLng( v2[0], v2[1]);
         var var3 = new google.maps.LatLng(v3[0], v3[1]);
 
         var tab = [{location:var2,stopover: true}];
         var directionsService = new google.maps.DirectionsService();
+
         var directionsDisplay = new google.maps.DirectionsRenderer({
             'map': map
         });
@@ -112,6 +142,8 @@ console.log(prop);
             optimizeWaypoints: true,
             travelMode: google.maps.TravelMode.WALKING
         };
+
+
         directionsService.route(request, function (result, status) {
             if (status == google.maps.DirectionsStatus.OK) {
                 directionsDisplay.setDirections(result);
@@ -120,35 +152,26 @@ console.log(prop);
 
     }
 
+    $scope.experience= function() {
 
-    // function  tracage( v1,v2,v3) {
-    //     var var3 = new google.maps.LatLng(36.945366, 10.188960);
-    //     var var12 = new google.maps.LatLng(  36.926294, 10.022964);
-    //     var var1 = new google.maps.LatLng(36.903769, 10.192336);
-    //     var var2 = new google.maps.LatLng( 36.860929, 10.132255);
-    //
-    //     var var4 = new google.maps.LatLng(36.846248, 10.263633);
-    //     var tab = [{location:var2,stopover: true},{location:var12,stopover: true}];
-    //     var directionsService = new google.maps.DirectionsService();
-    //     var directionsDisplay = new google.maps.DirectionsRenderer({
-    //         'map': map
-    //     });
-    //
-    //
-    //     var request = {
-    //         origin: var1,
-    //         destination: var3,
-    //         waypoints: tab,
-    //         optimizeWaypoints: true,
-    //         travelMode: google.maps.TravelMode.WALKING
-    //     };
-    //     directionsService.route(request, function (result, status) {
-    //         if (status == google.maps.DirectionsStatus.OK) {
-    //             directionsDisplay.setDirections(result);
-    //         }
-    //     });
-    //
-    // }
+        switch ($scope.meanSelected) {
+            case 'Bus':
+                $http.put("http://localhost:3000/userExp/SearchByBus/"+"tuto").success(function (data) {
+
+                });
+                break;
+            case 'Train':
+                $http.put("http://localhost:3000/userExp/SearchByTrain/"+"tuto").then(function(response) {
+                    console.log("searchByTrain");
+                });
+                break;
+            case 'Metro':
+                $http.put("http://localhost:3000/userExp/SearchByMetro/"+"tuto").then(function(response) {
+                    console.log("searchByMetro");
+                });
+                break;
+        }
+    }
 
     var lta;
     var lga;
@@ -177,22 +200,22 @@ console.log(prop);
         initialize(100);
 
     }
-
+    $scope.rad = 100;
 
     initialize = function(data_max1){
 
-
+        $scope.rad= data_max1;
         if($scope.lat_depart!=undefined &&  $scope.lng_depart!=undefined)
         {
             lt=$scope.lat_depart;
             lg=$scope.lng_depart;
         }
 
-        var latLng = new google.maps.LatLng(lt,lg); // Correspond au coordonnées de Lille
+        var latLng = new google.maps.LatLng(lt,lg);
         var myOptions = {
             zoom      : 15,
             center    : latLng,
-            mapTypeId : google.maps.MapTypeId.TERRAIN, // Type de carte, différentes valeurs possible HYBRID, ROADMAP, SATELLITE, TERRAIN
+            mapTypeId : google.maps.MapTypeId.TERRAIN,
             maxZoom   : 20
         };
 
@@ -210,24 +233,39 @@ console.log(prop);
 
         }
         cityCircle = new google.maps.Circle(cercleOptions);
-
-        var marker = new google.maps.Marker({ position: latLng, icon: "../assets/img/marker.png",	title:"My position!", map : map	});
+        var marker = new google.maps.Marker({ position: latLng, title:"My position!", map : map	});
         Markage(lt,lg,data_max1);
 
+////////////////////////////////////////
+        var markerDestination = new google.maps.Marker({
+            map: map
+        });
+        /////////////////////////////////////////
+        google.maps.event.addListener(map, 'click', function(event) {
+            placeMarker(event.latLng);
+            $scope.lat_destination = event.latLng.lat();
+            $scope.lng_destination = event.latLng.lng();
+            console.log($scope.lat_destination);
+            console.log($scope.lng_destination);
+        });
+        google.maps.event.addListener(marker, "click", function() {
+            map.removeOverlay(marker);
+        });
+
+        function placeMarker(location) {
+
+            markerDestination.setPosition(new google.maps.LatLng(location.lat(),location.lng()));
+            markerDestination.position = location;
+            markerDestination.addListener("click", function() {
+                markerDestination.setMap(null);
+                markerDestination = new google.maps.Marker({
+                    map: map
+                });
+                $scope.lat_destination = undefined;
+                $scope.lng_destination = undefined;
+            });
+        }
     };
-
-
-    $scope.lat_depart = undefined;
-    $scope.lng_depart = undefined;
-
-    $scope.$on('gmPlacesAutocomplete::placeChanged', function() {
-        var location = $scope.autocomplete_depart.getPlace().geometry.location;
-        $scope.lat_depart = location.lat();
-        $scope.lng_depart = location.lng();
-        $scope.$apply();
-
-        initialize(data_max);
-    });
 
     var teslaThemes = {
 
@@ -1068,56 +1106,6 @@ console.log(prop);
             }, 300);
         }
     }());
-    /***************************** */
-
-    /************** Latitude et longitude de Départ *******************/
-
-
-    /************** Latitude et longitude de Destination *******************/
-    $scope.lat_destination = undefined;
-    $scope.lng_destination = undefined;
-
-    var departs = [];
-    var arrivees =[];
-    $scope.$on('gmPlacesAutocomplete::placeChanged', function() {
-        var location = $scope.autocomplete_destination.getPlace().geometry.location;
-        $scope.lat_destination = location.lat();
-        $scope.lng_destination = location.lng();
-        $scope.$apply();
-        var departs = [];
-        var arrivees =[];
-        $http.get("http://localhost:3000/stations/near/"+lt+"/"+lg+"/"+1000)
-            .then(function (response) {
-                departs=response.data;
-            }).finally(function () {
-
-            $http.get("http://localhost:3000/stations/near/"+$scope.lat_destination+"/"+$scope.lng_destination+"/"+1000)
-                .then(function (response) {
-
-                    console.log($scope.lat_destination);
-                    console.log($scope.lat_destination);
-
-                    arrivees=response.data;
-                }).finally(function(){
-
-                for (i=0;i<departs.length;i++)
-                {
-                    for(j=0;j<arrivees.length;j++)
-                    {
-                        $http.get("http://localhost:3000/stations/combinaison/"+departs[i].id+"/"+arrivees[j].id)
-                            .then(function (response) {
-                                $scope.combinations.push(response.data);
-                            });
-                    }
-                }
-
-
-            });
-
-
-        });
-
-    });
 
 }
 HomeControllerFN.$inject=["$scope","$http"];

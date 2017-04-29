@@ -93,70 +93,83 @@ router.get('/combinaison/:station1/:station2', function(req, res) {
     var array1=[];
     var means1;
     var means2;
+    var depart;
+    var arrivee;
+    var transit;
+    Stations.find({"id" :req.params.station1}).
+    exec(function(err,data){
 
-    Means.find({stations: req.params.station1}).exec(function (err, data) {
+        depart = data;
 
-        means1 = data;
-        Means.find({stations: req.params.station2}).exec(function (err, data) {
+        Stations.find({"id" :req.params.station2}).
+        exec(function(err,data){
 
+            arrivee = data;
+            Means.find({stations: req.params.station1}).exec(function (err, data) {
 
-            means2 = data;
-
-            async.each(means1, function (element, callback) {
-
-
-                async.each(element.stations, function (element1, callback) {
+                means1 = data;
+                Means.find({stations: req.params.station2}).exec(function (err, data) {
 
 
-                    async.each(means2, function (element2, callback) {
+                    means2 = data;
+
+                    async.each(means1, function (element, callback) {
 
 
-                        async.each(element2.stations, function (element3, callback) {
+                        async.each(element.stations, function (element1, callback) {
 
-                            if (element1 == element3) {
-                                console.log("++Prends transport " + element.name + " de l'arret de départ : " + req.params.station1 + " descend Arret :" + element1 + " et Prend " + element2.name + " pour arriver à " + req.params.station2);
-                                array1.push({
 
-                                    transport_depart: element.name,
-                                    arret_depart: req.params.station1,
-                                    arret_transit: element1,
-                                    transport_transit: element2.name,
-                                    arret_arrivee: req.params.station2,
-                                    moyens: [{type:element.type,ref:element.name},{type:element2.type,ref:element2.name}]
+                            async.each(means2, function (element2, callback) {
+
+
+                                async.each(element2.stations, function (element3, callback) {
+
+                                    if (element1 == element3) {
+
+                                        console.log("++Prends transport " + element.name + " de l'arret de départ : " + req.params.station1 + " descend Arret :" + element3 + " et Prend " + element2.name + " pour arriver à " + req.params.station2);
+                                        array1.push({
+                                            depart: depart[0].name,
+                                            arrivee: arrivee[0].name,
+                                            transit: element1,
+                                            transport_depart: element.name,
+                                            arret_depart: req.params.station1,
+                                            arret_transit: element1,
+                                            transport_transit: element2.name,
+                                            arret_arrivee: req.params.station2,
+                                            moyens: [{type: element.type, ref: element.name}, {
+                                                type: element2.type,
+                                                ref: element2.name
+                                            }]
+
+                                        });
+                                    }
+                                }, function (err) {
 
                                 });
 
-                            }
+                            }, function (err) {
+
+                            });
 
 
                         }, function (err) {
 
+
                         });
 
+                        callback();
                     }, function (err) {
 
+                        res.json(array1);
                     });
-
-
-                }, function (err) {
 
 
                 });
 
-
-                callback();
-            }, function (err) {
-
-                res.json(array1);
             });
 
-
         });
-
     });
-
-
-
 });
 
 
@@ -173,10 +186,6 @@ router.get('/:reference', function(req, res) {
 
         res.json(station);
     });
-
-
-
-
 });
 
 module.exports = router;

@@ -163,6 +163,8 @@ app.use(function (req, res, next) {
     res.setHeader('Access-Control-Allow-Credentials', true);
     next();
 });
+
+
 app.use('/stations', stations);
 app.use('/means', means);
 app.use('/payment', payment);
