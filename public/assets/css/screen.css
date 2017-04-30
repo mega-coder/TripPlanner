@@ -4466,8 +4466,9 @@ footer .copyrigts p a:hover {
 .single-blogpost .post-meta .post-title {
   margin: 0 0 15px;
   text-align: center;
-  color: #2e2e2e;
-  font-size: 19px;
+  color: #424242;
+  font-size: 22px;
+  font-family: cursive;
   font-weight: 200;
   line-height: 1.105em;
 }
@@ -4505,11 +4506,6 @@ footer .copyrigts p a:hover {
   background: #673ab7;
   content: "";
 }
-.single-blogpost.post-with-image .post-meta:before {
-  display: inline-block;
-  background: #d25959;
-  content: "";
-}
 .single-blogpost.post-with-video .post-meta:before {
   display: inline-block;
   content: "";
@@ -4521,7 +4517,7 @@ footer .copyrigts p a:hover {
   content: "";
 }
 .single-blogpost .post-body {
-  padding: 30px 45px 75px;
+  padding: 30px 100px 75px;
 }
 .single-blogpost .post-body p {
   margin: 0 0 30px;
@@ -4543,11 +4539,13 @@ footer .copyrigts p a:hover {
 .single-blogpost .share-block {
   display: block;
   margin-top: 30px;
+  margin-bottom: 40px;
 }
 .single-blogpost .post-author {
   display: block;
-  margin: 45px -45px 0;
-  padding: 25px 45px 0;
+  padding-top: 30px;
+  /*margin: 38px -45px -52px;
+  padding: 25px 45px 0;*/
   border-top: 1px solid #f5f5f5;
 }
 .single-blogpost .post-author h4 {

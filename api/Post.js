@@ -29,9 +29,9 @@ router.get('/:post', function(req, res, next) {
             return res.status(404).send();
 
         mypost.addview(function(err, post){
-        if (err) { return next(err); }
-    });
-
+            if (err) { return next(err); }
+        });
+        console.log(mypost)
         return res.json(mypost);
      });
 });
@@ -91,20 +91,20 @@ router.delete('/delete/:post', function(req, res) {
     console.log("Deleting Post with ID: " + req.params.post);
     Post.findById(req.params.post)
         .exec(function(err, doc) {
-            if (err || !doc) {
-                res.statusCode = 404;
-                res.send({});
-            } else {
-                doc.remove(function(err) {
-                    if (err) {
-                        res.statusCode = 403;
-                        res.send(err);
-                    } else {
-                        res.send({});
-                    }
-                });
-            }
-        });
+        if (err || !doc) {
+            res.statusCode = 404;
+            res.send({});
+        } else {
+            doc.remove(function(err) {
+                if (err) {
+                    res.statusCode = 403;
+                    res.send(err);
+                } else {
+                    res.send({});
+                }
+            });
+        }
+    });
 });
 
 // Edit a post

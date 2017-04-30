@@ -31,6 +31,10 @@ function configFN($routeProvider){
             controller:"PostAddController",
             templateUrl:"./pages/PostViews/PostAdd.view.html"
         })
+        .when("/post/edit/:id",{
+        controller:"PostEditController",
+        templateUrl:"./pages/PostViews/PostEdit.view.html"
+        })
         .otherwise({
             redirectTo:"/404"
         });

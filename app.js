@@ -13,7 +13,7 @@ var stations = require('./api/Stations');
 var means = require('./api/Means');
 var payment = require('./api/Payment');
 var experience = require('./api/UserExperience');
-var posts = require('./api/post');
+var posts = require('./api/Post');
 var commentforum = require('./api/Commentforum');
 var Comments = require('./api/Comments');
 var Users = require('./api/User');
@@ -173,6 +173,9 @@ app.use('/api/posts', posts);
 app.use('/Comments', Comments);
 app.use('/User',Users);
 app.use('/api/commentforum', commentforum);
+
+
+
 
 
 /*

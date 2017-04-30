@@ -41,5 +41,11 @@ PostSchema.pre('remove', function(next) {
     // Middleware Remove all the category references to the removed post
 });
 
+PostSchema.methods.removeComment = function (comment) {
+    var index = this.comments.indexOf(comment);
+    this.comments.splice(index, 1);
+    this.save();
+}
+
 
 module.exports = mongoose.model('Post', PostSchema);
