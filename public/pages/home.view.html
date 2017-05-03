@@ -25,6 +25,13 @@
 
 				<a  class="button theme-button-1 update-properties" ng-click="getPropositions()"  style="cursor:pointer" id="x">Find path</a>
 				<br> <br>
+				<div ng-if="empty == true" style="height:300px; width:380px;text-align: center; background-color: white;">
+					<br>
+
+					<img src="../assets/img/oops.png" alt="" height="50%" width="50%" >
+					<h4> Sorry! we haven't found any any proposition. Please try to choose another destination</h4>
+
+				</div>
 				<div ng-show="display">
 
 					<div class="box-caption" style="background-color:#b71c1c; text-align: center;">
