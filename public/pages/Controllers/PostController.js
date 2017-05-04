@@ -53,6 +53,8 @@ angular.module('mean-stack')
             window.location.href="https://twitter.com/intent/tweet?url="+escape(window.location.href);
         };
 
+
+
         $scope.addComment = function () {
             var data = {
                 body: $scope.body,
@@ -69,6 +71,40 @@ angular.module('mean-stack')
             });
             $location.path('/post/show/'+$routeParams.id);
             //$route.reload();
+
+        };
+
+
+        $scope.updatemycomment = function (comment,_$index) {
+
+        $scope.bod = comment.body;
+
+        console.log(comment.body);
+            var data = {
+                body: comment.body,
+                author : comment.author,
+                upvotes: comment.upvotes,
+                downvotes: comment.downvotes,
+                created: comment.created
+            };
+
+            $http.put("/api/commentforum/update/"+comment._id+"/"+$routeParams.id, data).success(function (data, status) {
+                console.log(status);
+            });
+            $scope.tabbool = new Array($scope.tabComments.length);
+            for (var i =0;  i<$scope.tabComments.length;i++){
+                $scope.tabbool[i] =false;
+            }
+        };
+
+        $scope.updateComment = function (comment,_$index) {
+            $scope.tabbool = new Array($scope.tabComments.length);
+            for (var i =0;  i<$scope.tabComments.length;i++){
+                $scope.tabbool[i] =false;
+            }
+
+
+            $scope.tabbool[_$index] =true;
 
         };
 

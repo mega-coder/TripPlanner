@@ -32,6 +32,48 @@ router.post('/comments/:post',function(req, res, next) {
         }
     });
 });
+// Update a comment
+router.put('/update/:comment/:post', function (req, res) {
+     console.log("Updating comment with ID: ",+req.params.comment);
+
+     Post.findById(req.params.post).exec(function(err, doc) {
+        if (err || !doc) {
+            res.statusCode = 404;
+            res.send({});
+        } else {
+            var index = doc.comments.indexOf(req.params.comment);
+            doc.save();
+        }
+     });
+
+    Comment.findByIdAndUpdate(req.params.comment,req.body,function(err) {
+        if (err)
+            res.send(err);
+        res.json({ message: 'Comment updated!' });
+    });
+});
+
+// Delete a comment
+router.delete('/delete/:comment/:post', function(req, res) {
+    console.log("Deleting comment with ID: " + req.params.comment);
+
+    var mPost = Post.findById(req.params.post).exec(function(err, doc) {
+        if (err || !doc) {
+            res.statusCode = 404;
+            res.send({});
+        } else {
+            var index = doc.comments.indexOf(req.params.comment);
+            doc.comments.splice(index, 1);
+            doc.save();
+        }
+    });
+
+    Comment.findByIdAndRemove(req.params.comment, function(err) {
+        if (err)
+            res.send(err);
+        res.json({ message: 'Comment removed from the post!' });
+    });
+});
 
 // Upvote a Comment
 router.put('/upvote/:comment', function(req, res, next) {
@@ -57,36 +99,14 @@ router.put('/downvote/:comment',function(req, res, next) {
     });
 });
 
-
-// Delete a comment
-router.delete('/delete/:comment/:post', function(req, res) {
-    console.log("Deleting comment with ID: " + req.params.comment);
-
-    var mPost = Post.findById(req.params.post).exec(function(err, doc) {
-        if (err || !doc) {
-            res.statusCode = 404;
-            res.send({});
-        } else {
-            var index = doc.comments.indexOf(req.params.comment);
-            doc.comments.splice(index, 1);
-            doc.save();
-        }
-    });
-
-    Comment.findByIdAndRemove(req.params.comment, function(err) {
-        if (err)
-            res.send(err);
-        res.json({ message: 'Comment removed from the post!' });
-    });
-});
-
-// Get a single Post
-router.get('/:id', function(req, res, next) {
-    Comment.findById(req.params.id,function (err,mypost) {
+// Get a single Comment
+router.get('/:comment', function(req, res, next) {
+    Comment.findById(req.params.comment,function (err,mypost) {
         if(!mypost)
             return res.status(404).send();
         return res.json(mypost);
     });
 });
+
 
 module.exports = router;
