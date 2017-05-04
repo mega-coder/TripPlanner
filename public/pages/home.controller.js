@@ -90,7 +90,7 @@ function HomeControllerFN($scope,$http){
                 }
 
             });
-            if ($scope.propositions.length == 0){ $scope.empty = true;}
+            if ($scope.propositions.length == 0){ $scope.empty = true; $scope.display = false;}
         });
     }
 
