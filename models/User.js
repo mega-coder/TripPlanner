@@ -3,7 +3,8 @@ var validator = require('validator');
 var Schema = mongoose.Schema;
 
 var UserSchema = new Schema({
-    username: String,
+    FirstName : String,
+    LastName : String,
     password : {type:String,default:null},
     email : {
         type:String,
@@ -29,4 +30,4 @@ var UserSchema = new Schema({
         prix : Number
     }
 },{collection:"User"});
-module.exports = mongoose.model('User', UserSchema);
+module.exports = mongoose.model('Users', UserSchema);

@@ -31,7 +31,7 @@
 
                                 <span id="heart-wrapper1" ng-if="comment.user != user">
                                     <span id="heart1" ng-click ="addlike(comment)" ></span>
-                                    <sapn class="likes-number">{{comment.like.length}}</sapn>
+                                    <sapn class="likes-number">{{comment.likes.length}}</sapn>
                                 </span>
                                 <img src="../assets/img/edit.png" ng-if="comment.user==user" ng-click="update($event,comment._id)"/>
                                 <img src="../assets/img/téléchargement.jpg" ng-click="delete(comment._id)" ng-if="comment.user==user" />

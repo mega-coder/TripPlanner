@@ -1,4 +1,4 @@
-function CommentsControllerFN($scope,$http,$compile,Socket) {
+function CommentsControllerFN($scope,$http,$compile,Socket,$localStorage) {
 
 
 
@@ -7,10 +7,8 @@ function CommentsControllerFN($scope,$http,$compile,Socket) {
     $scope.means = [];
     $scope.show = true;
     $scope.selected="";
-    $scope.user="test@esprit.tn";
+    $scope.user=$localStorage.currentUser.email;
     $scope.index=undefined;
-
-
 
     Socket.on('listcomments',function (d) {
 
@@ -150,7 +148,7 @@ Socket.on("preview1",function (data) {
 
 
             comment = {
-                "user": "test@esprit.tn",
+                "user": $scope.user,
                 "mean": $scope.selected,
                 "message": message,
                 "rate": 1,
@@ -256,6 +254,6 @@ Socket.on("preview1",function (data) {
 }
 
 
-CommentsControllerFN.$inject=["$scope","$http","$compile","Socket"];
+CommentsControllerFN.$inject=["$scope","$http","$compile","Socket","$localStorage"];
 angular.module("mean-stack").controller("CommentsController",CommentsControllerFN);
 

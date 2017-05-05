@@ -17,6 +17,7 @@ var posts = require('./api/Post');
 var commentforum = require('./api/Commentforum');
 var Comments = require('./api/Comments');
 var Users = require('./api/User');
+var Authentifiation = require('./api/Authentification')
 
 var app = express();
 var http = require("http");
@@ -127,7 +128,21 @@ socket.on("preview" , function (object) {
 });
 
 
+    socket.on("disconnect",function (socket) {
 
+        var  x =-1;
+
+        for(i=0;i<Clients.length;i++)
+        {
+            if(Clients[i].id == socket.id)
+            {
+                x = i;
+                break;
+            }
+        }
+
+        Clients.splice(x,1);
+    });
 
 
 
@@ -173,6 +188,8 @@ app.use('/api/posts', posts);
 app.use('/Comments', Comments);
 app.use('/User',Users);
 app.use('/api/commentforum', commentforum);
+app.use('/authentification',Authentifiation);
+
 
 
 

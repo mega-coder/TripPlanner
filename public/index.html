@@ -22,6 +22,10 @@
 	<link rel="stylesheet" href="assets/css/nouislider.css" />
 	<link rel="stylesheet" href="assets/css/icomoon.css" />
 	<link rel="stylesheet" href="assets/css/screen.css" />
+	<link rel="stylesheet" href="assets/css/login.css" />
+	<link rel="stylesheet" href="assets/css/register.css" />
+
+
 
 
 	<!-- Scripts -->
@@ -31,14 +35,16 @@
 	<script src="lib/angular.js"></script>
 	<script src="lib/angular-route.js"></script>
 	<script src="lib/angular-resource.js"></script>
+	<script src="lib/ngStorage.js"></script>
 	<script src="lib/angucomplete-alt.js"></script>
 	<script src="http://maps.googleapis.com/maps/api/js?libraries=places&sensor=false"></script>
 	<script src="lib/angularjs-google-maps.js"></script>
-	<script src="app.js"></script>
 	<!--   <script src="assets/js/options.js"></script>-->
+	<script src="app.js"></script>
 	<script src="pages/Controllers/Socket.js"></script>
 	<script src="pages/home.controller.js"></script>
 	<script src="pages/comments.controller.js"></script>
+	<script src="pages/user.controller.js"></script>
 	<script src="pages/Controllers/PostController.js"></script>
 	<script src="pages/payment.controller.js"></script>
 	<script src="pages/payment.controller.js"></script>
@@ -71,8 +77,16 @@
 				<li><a href="#"><i class="fa fa-instagram"></i></a></li>
 				<li><a href="#"><i class="fa fa-pinterest"></i></a></li>
 			</ul>
+			<ul class="navigation">
+				<li class="home current-menu-item"><a href="my-profile.html">My Profile</a></li>
+				<li class="listing menu-item-has-children"><a href="#/posts/list">Posts</a></li>
+				<li class="property"><a href="#/Payment">Payment</a></li>
+				<li class="agents"><a href="agents.html">Agents</a></li>
+				<li class="blog"><a href="#/comments">Comments</a></li>
+				<li class="error"><a href="404.html">404 Page</a></li>
+			</ul>
 
-			<p><a class="login" href="#">Login</a> / <a href="#" class="register">Register</a></p>
+			<p id="loginlogout"><a  href="#/login">Login</a> / <a href="#/register">Register</a></p>
 		</div>
 
 
