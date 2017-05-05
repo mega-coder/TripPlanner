@@ -115,9 +115,7 @@ router.get('/combinaison/:station1/:station2', function(req, res) {
 
                     async.each(means1, function (element, callback) {
 
-
                         async.each(element.stations, function (element1, callback) {
-
 
                             async.each(means2, function (element2, callback) {
 
@@ -163,7 +161,6 @@ router.get('/combinaison/:station1/:station2', function(req, res) {
                         res.json(array1);
                     });
 
-
                 });
 
             });
@@ -171,10 +168,6 @@ router.get('/combinaison/:station1/:station2', function(req, res) {
         });
     });
 });
-
-
-
-
 
 router.get('/:reference', function(req, res) {
     Stations.find({"id" :req.params.reference}).

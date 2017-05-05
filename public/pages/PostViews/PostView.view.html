@@ -77,7 +77,8 @@
 
                                 <div class="comment-body">
                                     <div class="message">
-                                        <p>{{comment.body}}</p>
+                                        <p ng-if="!tabbool[$index]">{{comment.body}}</p>
+                                        <input ng-model="comment.body" ng-keyup="$event.keyCode == 13 && updatemycomment(comment,_$index)"  ng-if="tabbool[$index]"  value="{{ comment.body}}"></input>
                                     </div>
 
                                     <div class="comment-info">
@@ -90,6 +91,7 @@
                                         <p style="margin-top: 7px;float: right;">
                                             <a href="" class="fa fa-trash-o" ng-click="deleteComment(comment)" aria-hidden="true">
                                             </a></p>
+                                        <p><button ng-click="updateComment(comment,$index)">Update</button></p>
                                     </div>
                                 </div>
                             </li>
@@ -104,7 +106,8 @@
                                 <textarea class="js-input form-input" placeholder="Leave a comment" ng-model="body"></textarea>
                             </div>
 
-                            <input type="submit" value="add a comment" class="submit-button" ng-click="addComment()">
+                            <input type="submit" value="add a comment" class="submit-button"  ng-click="addComment()">
+
                         </div>
                     </form>
                 </div>

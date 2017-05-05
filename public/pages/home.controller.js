@@ -6,7 +6,7 @@ function HomeControllerFN($scope,$http){
     $scope.combinations=[];
     $scope.data = [];
     $scope.display = false;
-    $scope.display2 = false;
+    $scope.empty = false;
     var mean = true;
     var map;
     var initialize;
@@ -83,12 +83,14 @@ function HomeControllerFN($scope,$http){
                                 $scope.data.push(response.data);
                                 $scope.propositions.push(response.data);
                                 $scope.display = true;
+                                $scope.empty = false;
                                 console.log(response.data);
                             });
                     }
                 }
 
             });
+            if ($scope.propositions.length == 0){ $scope.empty = true; $scope.display = false;}
         });
     }
 
