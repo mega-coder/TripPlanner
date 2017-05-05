@@ -32,7 +32,7 @@ function UserControllerFN($scope,$http,$location,$localStorage,$compile) {
        Login($scope.userlogin.email, $scope.userlogin.password, function (result) {
      if (result === true) {
      console.log("success")
-         $("#loginlogout").html("<p><a>logount</a></p>");
+         $("#loginlogout").html("<p><a>logout</a></p>");
      $location.path('/');
      } else {
      $scope.error = 'Email or password is incorrect';
